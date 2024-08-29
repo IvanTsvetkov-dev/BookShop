@@ -27,6 +27,8 @@ class _GreetingsPageState extends State<GreetingsPage>
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.sizeOf(context);
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea(
@@ -37,22 +39,46 @@ class _GreetingsPageState extends State<GreetingsPage>
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Padding(
-                    padding: EdgeInsets.only(top: 50),
+                    padding: EdgeInsets.only(top: 40),
                     child: Column(
+                      
                       children: [
                         Text(
+                          textAlign: TextAlign.center,
                             style: TextStyle(
-                                color: Color(0xFFF4F4FB), fontSize: 52),
+                              
+                                shadows: [
+                                  Shadow(
+                                    color: Colors
+                                        .black26, // Choose the color of the shadow
+                                    blurRadius:
+                                        2.0, // Adjust the blur radius for the shadow effect
+                                    offset: Offset(0, 4),
+                                  )
+                                ],
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFFF4F4FB),
+                                fontSize: 48),
                             'Book'),
                         Text(
                             style: TextStyle(
-                                color: Color(0xFFF4F4FB), fontSize: 40),
+                                shadows: [
+                                  Shadow(
+                                    color: Colors
+                                        .black26, // Choose the color of the shadow
+                                    blurRadius:
+                                        2.0, // Adjust the blur radius for the shadow effect
+                                    offset: Offset(0, 4),
+                                  )
+                                ],
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFFF4F4FB),
+                                fontSize: 40),
                             'Shop')
                       ],
                     )),
-                Container(
-                  width: 300,
-                  height: 300,
+                SizedBox(
+                  height: screenSize.height * 0.4,
                   child: Lottie.asset(
                     'assets/splash.json',
                     controller: _controller,
@@ -64,17 +90,21 @@ class _GreetingsPageState extends State<GreetingsPage>
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 100),
+                  padding: const EdgeInsets.only(bottom: 80),
                   child: Column(
                     children: [
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(context, '/login');
+                        },
                         child: const Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
                             child: Text(
                                 style: TextStyle(
-                                    color: Color(0xFFF4F4FB), fontSize: 32),
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFFF4F4FB),
+                                    fontSize: 30),
                                 'GET STARTED')),
                       ),
                       const Padding(
@@ -82,8 +112,8 @@ class _GreetingsPageState extends State<GreetingsPage>
                         child: Text(
                             style: TextStyle(
                                 color: Color(0xFFF4F4FB),
-                                fontSize: 28,
-                                fontWeight: FontWeight.w100),
+                                fontSize: 24,
+                                fontWeight: FontWeight.w300),
                             'Buy books, be smart'),
                       )
                     ],

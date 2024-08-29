@@ -1,10 +1,11 @@
 import 'package:bookshopapp/pages/greetings_page.dart';
+import 'package:bookshopapp/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(const EntryPoint());
 }
-//TEst
+
 class EntryPoint extends StatelessWidget {
   const EntryPoint({super.key});
 
@@ -13,6 +14,10 @@ class EntryPoint extends StatelessWidget {
     const ColorScheme colorScheme = ColorScheme.light(
         primary: Color(0xFF5E69EE),
         secondary: Color.fromARGB(100, 57, 175, 234));
+
+    const String initialRoute = '/';
+
+
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -25,7 +30,11 @@ class EntryPoint extends StatelessWidget {
           textTheme: const TextTheme(
               displayLarge:
                   TextStyle(fontSize: 72, fontWeight: FontWeight.bold))),
-      home: const GreetingsPage(),
+      initialRoute: initialRoute,
+      routes: {
+        '/' : (context) => const GreetingsPage(),
+        '/login': (context) => const LoginPage()
+      },
     );
   }
 }
