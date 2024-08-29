@@ -1,4 +1,5 @@
-import 'package:bookshopapp/widgets/StyledTextField.dart';
+import 'package:bookshopapp/widgets/login_styled_text_field.dart';
+import 'package:bookshopapp/widgets/pass_styled_text_field.dart';
 import 'package:flutter/material.dart';
 
 class SignUpForm extends StatefulWidget {
@@ -60,15 +61,14 @@ class _SignUpFormState extends State<SignUpForm> {
                   borderRadius: const BorderRadius.all(Radius.circular(30)),
                   hintText: 'example@gmail.com',
                   prefixIconData: Icons.account_circle),
-              LoginStyledTextField(
+              StyledPassTextField(
                   validator: (value) => null,
                   padding: const EdgeInsets.only(bottom: 10),
                   textColor: textColor,
                   hintColor: hintColor,
                   borderColor: borderColor,
                   borderRadius: const BorderRadius.all(Radius.circular(30)),
-                  hintText: 'fqbnfwd!#fddwcbg',
-                  prefixIconData: Icons.account_circle),
+                  hintText: 'Password'),
               FractionallySizedBox(
                 widthFactor: 1.0,
                 child: ElevatedButton(

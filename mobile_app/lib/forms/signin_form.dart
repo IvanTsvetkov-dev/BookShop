@@ -1,3 +1,4 @@
+import 'package:bookshopapp/widgets/pass_styled_text_field.dart';
 import 'package:flutter/material.dart';
 
 class SignInForm extends StatefulWidget {
@@ -47,28 +48,14 @@ class _SignInFormState extends State<SignInForm> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: TextField(
-                  obscureText: true,
-                  controller: passwordController,
-                  style: const TextStyle(color: textColor),
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.lock,
-                      color: borderColor,
-                    ),
-                    hintStyle: TextStyle(color: hintColor),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: borderColor, width: 2.0),
-                        borderRadius: BorderRadius.all(Radius.circular(30))),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: borderColor, width: 3.0),
-                        borderRadius: BorderRadius.all(Radius.circular(30))),
-                    hintText: "Enter password",
-                  ),
-                ),
-              ),
+              StyledPassTextField(
+                  validator: (value) => null,
+                  padding: const EdgeInsets.only(bottom: 10),
+                  textColor: textColor,
+                  hintColor: hintColor,
+                  borderColor: borderColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(30)),
+                  hintText: 'Enter Password'),
               const Padding(
                 padding: EdgeInsets.only(bottom: 30),
                 child: Text(
