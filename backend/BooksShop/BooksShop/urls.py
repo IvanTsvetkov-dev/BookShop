@@ -17,9 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from book import views
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/books_list', views.books_list),
-    path('api/book/<int:id>/', views.book_detail)
+    path('api/books_list', views.BooksList.as_view()),
+    path('api/book/<int:id>/', views.BookDetail.as_view()),
+    path('api/basket', views.BasketContent.as_view()),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
+ 
