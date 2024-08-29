@@ -9,4 +9,4 @@ class BookSerializer(serializers.ModelSerializer):
 class BasketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Basket
-        fields = ['user', 'book_id', 'count']
+        fields = ['book_id', 'count']

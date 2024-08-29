@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from book import models
 from rest_framework.permissions import IsAuthenticated
+from django.http import Http404
+from rest_framework import status
 
 # API
 # def books_list(request):
@@ -30,9 +32,15 @@ class BasketContent(APIView): #Auth
     def get(self, request):
         user_id = request.user.id
         content_basket = models.Basket.objects.filter(user_id=user_id)
-        print(content_basket)
         serializer = BasketSerializer(content_basket, many=True)
         return Response({"basket_content": serializer.data})
+    def post(self, request):
+        serializer = BasketSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user_id=request.user.id)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
         
     #def post(self, request):
         
