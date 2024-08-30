@@ -37,16 +37,30 @@ class _StyledPassTextFieldState extends State<StyledPassTextField> {
     }
   }
 
+  EdgeInsets getEdgeInsets(BuildContext context){
+    final Size size = MediaQuery.sizeOf(context);
+    if (size.height < 700){
+      return const EdgeInsets.all(5);
+    }
+    else{
+      return const EdgeInsets.symmetric(vertical: 15, horizontal: 10);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: widget.padding,
       child: TextFormField(
+        onChanged: (value) {
+          debugPrint(MediaQuery.sizeOf(context).toString());
+        },
         validator: widget.validator,
         controller: widget.controller,
         obscureText: obscureText,
         style: TextStyle(color: widget.textColor),
         decoration: InputDecoration(
+          contentPadding: getEdgeInsets(context),
           prefixIcon: Icon(
             Icons.lock,
             color: widget.borderColor,

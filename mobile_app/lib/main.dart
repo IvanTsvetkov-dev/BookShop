@@ -1,4 +1,5 @@
 import 'package:bookshopapp/pages/greetings_page.dart';
+import 'package:bookshopapp/pages/home_page.dart';
 import 'package:bookshopapp/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +34,8 @@ class EntryPoint extends StatelessWidget {
       initialRoute: initialRoute,
       routes: {
         '/' : (context) => const GreetingsPage(),
-        '/login': (context) => const LoginPage()
+        '/login': (context) => const LoginPage(),
+        '/home': (context) => const HomePage()
       },
     );
   }

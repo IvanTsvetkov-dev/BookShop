@@ -114,7 +114,7 @@ class _GreetingsPageState extends State<GreetingsPage>
                                 color: Color(0xFFF4F4FB),
                                 fontSize: 24,
                                 fontWeight: FontWeight.w300),
-                            'Buy books, be smart'),
+                            '©Buy books, be smart'),
                       )
                     ],
                   ),

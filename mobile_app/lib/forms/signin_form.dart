@@ -1,3 +1,4 @@
+import 'package:bookshopapp/widgets/login_styled_text_field.dart';
 import 'package:bookshopapp/widgets/pass_styled_text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -27,28 +28,18 @@ class _SignInFormState extends State<SignInForm> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: TextField(
+              LoginStyledTextField(
                   controller: loginController,
-                  style: const TextStyle(color: textColor),
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.account_circle,
-                      color: borderColor,
-                    ),
-                    hintStyle: TextStyle(color: hintColor),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: borderColor, width: 2.0),
-                        borderRadius: BorderRadius.all(Radius.circular(30))),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: borderColor, width: 3.0),
-                        borderRadius: BorderRadius.all(Radius.circular(30))),
-                    hintText: "Enter email",
-                  ),
-                ),
-              ),
+                  validator: (value) => null,
+                  padding: const EdgeInsets.only(bottom: 10),
+                  textColor: textColor,
+                  hintColor: hintColor,
+                  borderColor: borderColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(30)),
+                  hintText: 'example@gmail.com',
+                  prefixIconData: Icons.account_circle),
               StyledPassTextField(
+                  controller: passwordController,
                   validator: (value) => null,
                   padding: const EdgeInsets.only(bottom: 10),
                   textColor: textColor,
@@ -70,10 +61,15 @@ class _SignInFormState extends State<SignInForm> {
               FractionallySizedBox(
                 widthFactor: 1.0,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    if (loginController.text == 'WWW' &&
+                        passwordController.text == 'LENINGRAD') {
+                      Navigator.pushReplacementNamed(context, '/home');
+                    }
+                  },
                   child: const Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                       child: Text(
                           style: TextStyle(
                               fontWeight: FontWeight.w700,
