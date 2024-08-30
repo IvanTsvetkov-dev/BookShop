@@ -44,21 +44,24 @@ urlpatterns = [
     #     schema_view.without_ui(cache_timeout=0),
     #     name='schema-json'
     # ),
-    path(
-        '',
-        schema_view.with_ui('swagger', cache_timeout=0),
-        name='schema-swagger-ui'
-    ),
+    path('',schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     # path(
     #     'redoc/',
     #     schema_view.with_ui('redoc', cache_timeout=0),
     #     name='schema-redoc'
     # ),
     path('admin/', admin.site.urls),
+    
     path('api/books_list', views.BooksList.as_view()),
+    
     path('api/book/<int:id>/', views.BookDetail.as_view()),
+    
     path('api/basket', views.BasketContent.as_view()),
+    
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    
+    path('api/random_quote', views.RandomQuote.as_view())
 ]
  
