@@ -3,6 +3,21 @@ from django.db import models
 from users.models import CustomUser
 
 class Book(models.Model):
+    class GenreBook(models.TextChoices):
+        ROMANCE = 'Rmnce', 'Romance'
+        MYSTERY = 'Mystr', 'Mystery & Thriller'
+        FANTASY = 'Fntsy', 'Fantasy'
+        SELFHELP = 'Sf-HP', 'Self-help'
+        HORROR = 'Hrrr', 'Horror'
+        SCIENCEFICTION = 'SF', 'Science Fiction'
+        CHILDRENBOOKS = 'CB', 'Children'
+        BIOGRAPHY = 'B/A', 'Biography/Autobiography'
+        HISTORICAL = 'HF', 'Historical Fiction'
+        OTHER = 'OTHR', 'Other'
+        
+    
+    
+    
     
     title = models.CharField(
         max_length = 128,
@@ -12,6 +27,13 @@ class Book(models.Model):
     author = models.CharField(
         max_length = 128, 
         null=False
+    )
+    
+    genre = models.CharField(
+        max_length=50,
+        null=True,
+        choices=GenreBook.choices,
+        default=GenreBook.OTHER
     )
     
     price = models.DecimalField(
@@ -25,9 +47,10 @@ class Book(models.Model):
         null=False
     )
     
-    # image = models.ImageField(
-    #     upload_to='books/'
-    # )
+    image = models.ImageField(
+        upload_to='books/',
+        default=""
+    )
     
     def __str__(self):
         name = f"{self.author} {self.title}"

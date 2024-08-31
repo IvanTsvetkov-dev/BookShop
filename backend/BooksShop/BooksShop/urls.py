@@ -16,11 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
+from BooksShop import settings
 from book import views
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from django.conf.urls.static import static
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework.permissions import *
@@ -44,24 +46,27 @@ urlpatterns = [
     #     schema_view.without_ui(cache_timeout=0),
     #     name='schema-json'
     # ),
-    path('',schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     # path(
     #     'redoc/',
     #     schema_view.with_ui('redoc', cache_timeout=0),
     #     name='schema-redoc'
     # ),
-    path('admin/', admin.site.urls),
     
-    path('api/books_list', views.BooksList.as_view()),
+    path('api/books_list/', views.BooksList.as_view()),
     
     path('api/book/<int:id>/', views.BookDetail.as_view()),
     
-    path('api/basket', views.BasketContent.as_view()),
+    path('api/basket/', views.BasketContent.as_view()),
     
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
-    path('api/random_quote', views.RandomQuote.as_view())
+    path('api/random_quote/', views.RandomQuote.as_view()),
+    
+    path('',schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    
+    path('admin/', admin.site.urls),
 ]
  
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
