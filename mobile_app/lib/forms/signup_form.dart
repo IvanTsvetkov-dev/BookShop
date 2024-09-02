@@ -1,6 +1,11 @@
+import 'dart:io';
+
+import 'package:bookshopapp/api/server_api.dart';
+import 'package:bookshopapp/models/user.dart';
 import 'package:bookshopapp/widgets/login_styled_text_field.dart';
 import 'package:bookshopapp/widgets/pass_styled_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({super.key});
@@ -11,6 +16,31 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passController = TextEditingController();
+
+  Future<void> signUpPressed() async {
+    final Response response = await tryRegister(User(
+        firstName: firstNameController.text,
+        lastName: lastNameController.text,
+        email: emailController.text,
+        password: passController.text,
+        phone: phoneController.text));
+    if (response.statusCode == HttpStatus.created) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Signed Up!')));
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Something went wrong. Maybe app is upset.')));
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +56,7 @@ class _SignUpFormState extends State<SignUpForm> {
             mainAxisSize: MainAxisSize.min,
             children: [
               LoginStyledTextField(
+                  controller: firstNameController,
                   validator: (value) => null,
                   padding: const EdgeInsets.only(bottom: 10),
                   textColor: textColor,
@@ -35,6 +66,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   hintText: 'First Name',
                   prefixIconData: Icons.account_circle),
               LoginStyledTextField(
+                  controller: lastNameController,
                   validator: (value) => null,
                   padding: const EdgeInsets.only(bottom: 10),
                   textColor: textColor,
@@ -44,6 +76,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   hintText: 'Last Name',
                   prefixIconData: Icons.account_circle),
               LoginStyledTextField(
+                  controller: phoneController,
                   validator: (value) => null,
                   padding: const EdgeInsets.only(bottom: 10),
                   textColor: textColor,
@@ -53,6 +86,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   hintText: '+7(910)-999-55-33',
                   prefixIconData: Icons.account_circle),
               LoginStyledTextField(
+                  controller: emailController,
                   validator: (value) => null,
                   padding: const EdgeInsets.only(bottom: 10),
                   textColor: textColor,
@@ -62,6 +96,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   hintText: 'example@gmail.com',
                   prefixIconData: Icons.account_circle),
               StyledPassTextField(
+                  controller: passController,
                   validator: (value) => null,
                   padding: const EdgeInsets.only(bottom: 10),
                   textColor: textColor,
@@ -72,7 +107,7 @@ class _SignUpFormState extends State<SignUpForm> {
               FractionallySizedBox(
                 widthFactor: 1.0,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: signUpPressed,
                   child: const Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 10),

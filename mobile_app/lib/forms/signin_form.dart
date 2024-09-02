@@ -1,6 +1,10 @@
+import 'dart:io';
+
+import 'package:bookshopapp/api/server_api.dart';
 import 'package:bookshopapp/widgets/login_styled_text_field.dart';
 import 'package:bookshopapp/widgets/pass_styled_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({super.key});
@@ -14,6 +18,25 @@ class _SignInFormState extends State<SignInForm> {
 
   final TextEditingController loginController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  Future<void> loginPressed() async {
+    final Response response =
+        await tryAuthenticate(loginController.text, passwordController.text);
+    if (response.statusCode == HttpStatus.ok) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Authorized')));
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+      
+    }
+    else{
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Unauthorized')));
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,12 +84,7 @@ class _SignInFormState extends State<SignInForm> {
               FractionallySizedBox(
                 widthFactor: 1.0,
                 child: ElevatedButton(
-                  onPressed: () {
-                    if (loginController.text == 'WWW' &&
-                        passwordController.text == 'LENINGRAD') {
-                      Navigator.pushReplacementNamed(context, '/home');
-                    }
-                  },
+                  onPressed: loginPressed,
                   child: const Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 0, vertical: 10),

@@ -1,15 +1,11 @@
+import 'package:bookshopapp/api/constants.dart' as constants;
+import 'package:bookshopapp/models/Book.dart';
 import 'package:flutter/material.dart';
 
 class BookCard extends StatelessWidget {
-  const BookCard(
-      {super.key,
-      required this.bookAuthor,
-      required this.bookTitle,
-      required this.price});
+  const BookCard({super.key, required this.book});
 
-  final String bookAuthor;
-  final String bookTitle;
-  final double price;
+  final Book book;
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +16,17 @@ class BookCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Placeholder(
-            fallbackWidth: 50,
+          Image.network(
+            Uri(
+                    scheme: 'https',
+                    host: constants.serverHost,
+                    path: book.image)
+                .toString(),
+            width: 50,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return const Icon(Icons.error, size: 50);
+            },
           ),
           Expanded(
             child: Container(
@@ -32,14 +37,14 @@ class BookCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    bookTitle,
+                    book.title,
                     style: const TextStyle(
                         fontWeight: FontWeight.w700, fontSize: 16),
                   ),
-                  Text(bookAuthor,
+                  Text(book.author,
                       style: const TextStyle(
                           fontWeight: FontWeight.w700, fontSize: 12)),
-                  Text('$price\$',
+                  Text('${book.price}\$',
                       style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 10,

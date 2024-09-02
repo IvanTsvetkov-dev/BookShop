@@ -1,7 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:bookshopapp/api/server_api.dart';
+import 'package:bookshopapp/models/Book.dart';
 import 'package:bookshopapp/widgets/book_card.dart';
 import 'package:bookshopapp/widgets/quote_card.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,6 +19,38 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int currentPageIndex = 0;
   final leningrad = ['WWW ЛЕНИНГРАД', 'WWW ТОЧКА РУ', 'WWW LENINGRAD'];
+  late Future<List<Book>> futureBookList;
+
+  @override
+  void initState() {
+    futureBookList = tryParseBooks();
+    super.initState();
+  }
+
+  Future<List<Book>> tryParseBooks() async {
+    final Response response = await fetchBookList();
+    final List<Book> result = List.empty(growable: true);
+
+    if (response.statusCode == HttpStatus.ok) {
+      // debugPrint(response.body);
+      final body = jsonDecode(response.body) as List<dynamic>;
+      for (dynamic element in body) {
+        final bookJson = element as Map<String, dynamic>;
+        final book = Book(
+            id: bookJson['id'],
+            title: bookJson['title'],
+            author: bookJson['author'],
+            image: bookJson['image'],
+            price: bookJson['price'],
+            countInStorage: bookJson['count_in_storage']);
+        result.add(book);
+      }
+      return result;
+    } else {
+      return List.empty();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,7 +151,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         itemBuilder: (context, index) {
                           return const QuoteCard(
-                            text: 'Test',
+                            text: 'Да я 100% пойду купаться',
                             author: 'Vanya Cvetkov',
                           );
                         },
@@ -138,20 +176,33 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  primary: false,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 10,
-                  itemBuilder: (BuildContext context, int index) {
-                    return BookCard(
-                      bookAuthor: '$index# Author',
-                      bookTitle: '$index# Title',
-                      price: 2.0 * index.toDouble(),
-                    );
-                  }),
-            )
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: FutureBuilder(
+                  future: futureBookList,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final bookList = snapshot.data as List<Book>;
+                      return ListView.builder(
+                          shrinkWrap: true,
+                          primary: false,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: bookList.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return BookCard(
+                              book: bookList[index],
+                            );
+                          });
+                    } else {
+                      return const Center(
+                        child: SizedBox(
+                          width: 60,
+                          height: 60,
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+                  },
+                ))
           ],
         ),
       ),

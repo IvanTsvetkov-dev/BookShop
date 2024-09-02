@@ -14,15 +14,6 @@ class _GreetingsPageState extends State<GreetingsPage>
     with TickerProviderStateMixin {
   late final AnimationController _controller;
 
-  Future<void> ping() async {
-    Uri serverUri = Uri(
-        scheme: 'https',
-        host: 'dd69-77-220-53-141.ngrok-free.app',
-        path: 'api/book/1');
-    Response response = await pingServer(serverUri);
-    debugPrint(response.body);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -104,8 +95,8 @@ class _GreetingsPageState extends State<GreetingsPage>
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          ping();
-                          // Navigator.pushReplacementNamed(context, '/login');
+                          // ping();
+                          Navigator.pushReplacementNamed(context, '/login');
                         },
                         child: const Padding(
                             padding: EdgeInsets.symmetric(
