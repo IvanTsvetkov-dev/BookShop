@@ -16,12 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
+from users.views import *
 from BooksShop import settings
 from book import views
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from book.urls import urlpatterns_api
 from django.conf.urls.static import static
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -51,10 +53,11 @@ urlpatterns = [
     #     schema_view.with_ui('redoc', cache_timeout=0),
     #     name='schema-redoc'
     # ),
+    path('',schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     
-    path('api/books_list/', views.BooksList.as_view()),
+    path('book/', include(urlpatterns_api)),
     
-    path('api/book/<int:id>/', views.BookDetail.as_view()),
+    path('api/create_user/', views.CustomUserCreate.as_view()),
     
     path('api/basket/', views.BasketContent.as_view()),
     
@@ -63,8 +66,6 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
     path('api/random_quote/', views.RandomQuote.as_view()),
-    
-    path('',schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     
     path('admin/', admin.site.urls),
 ]

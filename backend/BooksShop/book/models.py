@@ -15,10 +15,6 @@ class Book(models.Model):
         HISTORICAL = 'HF', 'Historical Fiction'
         OTHER = 'OTHR', 'Other'
         
-    
-    
-    
-    
     title = models.CharField(
         max_length = 128,
         null=False
@@ -71,13 +67,16 @@ class Basket(models.Model): #One to many
         null=False
     )
     
+    active_for_order = models.BooleanField(
+        default=False,
+    )
+    
     def __str__(self):
         user = CustomUser.objects.get(id=self.user.id)
         book = Book.objects.get(id=self.book_id)
         return f"{user} : {book}"
 
 class RandomQuote(models.Model):
-    
     quote = models.CharField(
         max_length=96,
         null=False
@@ -97,5 +96,6 @@ class RandomQuote(models.Model):
     active = models.BooleanField(
         default=False,
     )
+    
     def __str__(self):
         return f"{self.quote} ©{self.author}"

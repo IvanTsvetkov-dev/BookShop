@@ -28,7 +28,7 @@ DEBUG = True
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ce2f-77-220-53-141.ngrok-free.app', '127.0.0.1']
 
 
 # Application definition

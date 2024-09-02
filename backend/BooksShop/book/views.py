@@ -12,16 +12,18 @@ from rest_framework import status
 from datetime import date, timedelta
 from django.db.models import Q
 from django.core.exceptions import *
-
+from rest_framework import generics
+from rest_framework.views import APIView
+from users.serializers import UserSerializer
+from users.models import CustomUser
+from rest_framework.response import Response
 
 class BooksList(APIView):
-    
     def get(self, request, format=None):
         books = models.Book.objects.all()
         serializer = BookSerializer(books, many=True)
         return Response(serializer.data)
 class BookDetail(APIView):
-    
     def get(self, request, id):
         book = models.Book.objects.filter(id=id).first()
         serializer = BookSerializer(book)
@@ -69,3 +71,11 @@ class RandomQuote(APIView):
             return Response({"random_quote": activate_quote(actual_random_quote, date_now)})
 
         return Response({}, status=status.HTTP_404_NOT_FOUND)
+
+class CustomUserCreate(generics.CreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+        
