@@ -1,5 +1,6 @@
 import 'package:bookshopapp/widgets/book_card.dart';
 import 'package:bookshopapp/widgets/quote_card.dart';
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -104,15 +105,22 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       padding: const EdgeInsets.only(bottom: 20),
                       height: 180,
-                      child: CarouselView(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.zero)),
-                          elevation: 5,
-                          itemExtent: 300,
-                          children: List<Widget>.generate(3, (int index) {
-                            return const QuoteCard();
-                          })),
+                      child: Swiper(
+                        pagination: const SwiperPagination(
+                          builder: DotSwiperPaginationBuilder(
+                            color: Color(0xFF39AFEA),
+                          ),
+                        ),
+                        itemBuilder: (context, index) {
+                          return const QuoteCard(
+                            text: 'Test',
+                            author: 'Vanya Cvetkov',
+                          );
+                        },
+                        itemCount: 2,
+                        viewportFraction: 0.8,
+                        scale: 0.9,
+                      ),
                     )
                   ],
                 ),
@@ -137,7 +145,11 @@ class _HomePageState extends State<HomePage> {
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: 10,
                   itemBuilder: (BuildContext context, int index) {
-                    return const BookCard();
+                    return BookCard(
+                      bookAuthor: '$index# Author',
+                      bookTitle: '$index# Title',
+                      price: 2.0 * index.toDouble(),
+                    );
                   }),
             )
           ],

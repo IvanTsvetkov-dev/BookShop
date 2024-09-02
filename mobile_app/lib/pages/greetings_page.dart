@@ -1,4 +1,6 @@
+import 'package:bookshopapp/api/server_api.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:lottie/lottie.dart';
 
 class GreetingsPage extends StatefulWidget {
@@ -11,6 +13,15 @@ class GreetingsPage extends StatefulWidget {
 class _GreetingsPageState extends State<GreetingsPage>
     with TickerProviderStateMixin {
   late final AnimationController _controller;
+
+  Future<void> ping() async {
+    Uri serverUri = Uri(
+        scheme: 'https',
+        host: 'dd69-77-220-53-141.ngrok-free.app',
+        path: 'api/book/1');
+    Response response = await pingServer(serverUri);
+    debugPrint(response.body);
+  }
 
   @override
   void initState() {
@@ -41,12 +52,10 @@ class _GreetingsPageState extends State<GreetingsPage>
                 const Padding(
                     padding: EdgeInsets.only(top: 40),
                     child: Column(
-                      
                       children: [
                         Text(
-                          textAlign: TextAlign.center,
+                            textAlign: TextAlign.center,
                             style: TextStyle(
-                              
                                 shadows: [
                                   Shadow(
                                     color: Colors
@@ -95,7 +104,8 @@ class _GreetingsPageState extends State<GreetingsPage>
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pushReplacementNamed(context, '/login');
+                          ping();
+                          // Navigator.pushReplacementNamed(context, '/login');
                         },
                         child: const Padding(
                             padding: EdgeInsets.symmetric(

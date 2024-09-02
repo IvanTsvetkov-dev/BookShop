@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 
 class BookCard extends StatelessWidget {
-  const BookCard({super.key});
+  const BookCard(
+      {super.key,
+      required this.bookAuthor,
+      required this.bookTitle,
+      required this.price});
+
+  final String bookAuthor;
+  final String bookTitle;
+  final double price;
 
   @override
   Widget build(BuildContext context) {
@@ -19,19 +27,20 @@ class BookCard extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.only(left: 10),
               alignment: Alignment.topLeft,
-              child: const Column(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Book Title',
-                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                    bookTitle,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w700, fontSize: 16),
                   ),
-                  Text('Book author',
-                      style:
-                          TextStyle(fontWeight: FontWeight.w700, fontSize: 12)),
-                  Text('Price',
-                      style: TextStyle(
+                  Text(bookAuthor,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w700, fontSize: 12)),
+                  Text('$price\$',
+                      style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 10,
                           color: Color.fromARGB(56, 0, 0, 0)))
