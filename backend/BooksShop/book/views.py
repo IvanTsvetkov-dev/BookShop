@@ -40,10 +40,10 @@ class BasketContent(APIView): #Auth
     
     def post(self, request):
         serializer = BasketSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save(user_id=request.user.id)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class RandomQuote(APIView):
     def get(self, request):

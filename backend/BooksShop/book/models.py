@@ -74,7 +74,7 @@ class Basket(models.Model): #One to many
     def __str__(self):
         user = CustomUser.objects.get(id=self.user.id)
         book = Book.objects.get(id=self.book_id)
-        return f"{user} : {book}"
+        return f"{user.username}. {book.author}: {book.title}"
 
 class RandomQuote(models.Model):
     quote = models.CharField(
