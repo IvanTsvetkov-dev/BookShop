@@ -1,7 +1,11 @@
+import 'package:bookshopapp/api/server_api.dart' as server_api;
+import 'package:bookshopapp/forms/settings_form.dart';
 import 'package:bookshopapp/forms/signin_form.dart';
 import 'package:bookshopapp/forms/signup_form.dart';
+import 'package:bookshopapp/widgets/login_styled_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,11 +20,21 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   static const List<Tab> tabs = <Tab>[
     Tab(text: 'Sign In'),
     Tab(text: 'Sign Up'),
+    Tab(
+      text: 'Settings',
+    )
   ];
+
+  void loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final host = prefs.getString('server_host') ?? 'localhost';
+    server_api.serverHost = host;
+  }
 
   @override
   void initState() {
     super.initState();
+    loadSettings();
     _tabController = TabController(length: 2, vsync: this);
     _lottieController = AnimationController(vsync: this);
   }
@@ -37,15 +51,19 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     //Похорошему сделать бы какой-то singleton, который содержит эту инфу(?)
     Size screenSize = MediaQuery.sizeOf(context);
     EdgeInsets screenPadding = MediaQuery.of(context).padding;
+    const Color borderColor = Color.fromARGB(153, 94, 105, 238);
+    const Color hintColor = Color.fromARGB(153, 94, 105, 238);
+    const Color textColor = Color.fromARGB(255, 94, 106, 238);
 
     return Scaffold(
       // backgroundColor: Theme.of(context).colorScheme.primary,
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: SingleChildScrollView(
-        
         child: SafeArea(
           child: Container(
-            height: MediaQuery.sizeOf(context).height - screenPadding.bottom - screenPadding.top,
+              height: MediaQuery.sizeOf(context).height -
+                  screenPadding.bottom -
+                  screenPadding.top,
               alignment: Alignment.center,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -84,7 +102,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                     width: screenSize.width,
                     height: screenSize.height * 0.55,
                     child: const DefaultTabController(
-                        length: 2,
+                        length: 3,
                         child: Column(
                           children: [
                             TabBar(
@@ -96,7 +114,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                             Expanded(
                                 child: TabBarView(children: [
                               Center(child: SignInForm()),
-                              Center(child: SignUpForm())
+                              Center(child: SignUpForm()),
+                              Center(child: HostSettginsForm())
                             ]))
                           ],
                         )),
