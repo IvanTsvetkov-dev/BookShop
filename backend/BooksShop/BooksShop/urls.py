@@ -18,16 +18,14 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from users.views import *
 from BooksShop import settings
-from book import views
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
-from book.urls import urlpatterns_api
+from users.views import CustomUserCreate
 from django.conf.urls.static import static
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework.permissions import *
+from rest_framework.routers import DefaultRouter, SimpleRouter
+from api.urls import api_patterns
+
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -39,7 +37,11 @@ schema_view = get_schema_view(
    permission_classes=[AllowAny],
 )
 
-
+# router = SimpleRouter()
+# router.register(r'book', BookViewSet)
+# #router.register(r'auth', TokenObtainPairView, basename="auth")
+# router_custom = CustomRouter()
+# router_custom.register(r'basket', BasketViewSet, basename='basket')
 
 
 urlpatterns = [
@@ -55,19 +57,11 @@ urlpatterns = [
     # ),
     path('',schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     
-    path('book/', include(urlpatterns_api)),
+    path('', include(api_patterns)),
     
-    path('api/create_user/', views.CustomUserCreate.as_view()),
-    
-    path('api/basket/', views.BasketContent.as_view()),
-    
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    
-    path('api/random_quote/', views.RandomQuote.as_view()),
+    # path('api/random_quote/', views.RandomQuote.as_view()),
     
     path('admin/', admin.site.urls),
 ]
- 
+# print(router.urls)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

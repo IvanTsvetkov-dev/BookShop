@@ -1,5 +1,5 @@
 from django.core.exceptions import *
-from book.serializer import RandomQuoteSerializer
+from api.serializers import RandomQuoteSerializer
 from book import models
 
 def get_actual_quote():
