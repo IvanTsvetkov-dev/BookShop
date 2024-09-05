@@ -1,4 +1,4 @@
 @echo off
-python .\backend\BooksShop\manage.py makemigrations
-python .\backend\BooksShop\manage.py migrate
+call .\venv\Scripts\activate.bat
+pip install -r requirements.txt
 python .\backend\BooksShop\manage.py runserver
