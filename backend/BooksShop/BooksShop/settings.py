@@ -28,7 +28,7 @@ DEBUG = True
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
-ALLOWED_HOSTS = ['ce2f-77-220-53-141.ngrok-free.app', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'book',
     'users',
+    'api',
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_yasg',

@@ -1,4 +1,3 @@
 venv/
 media/
 db.sqlite3
-make_migations.bat
