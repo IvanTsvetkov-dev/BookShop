@@ -1,4 +1,6 @@
+import 'package:bookshopapp/api/server_api.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:lottie/lottie.dart';
 
 class GreetingsPage extends StatefulWidget {
@@ -41,12 +43,10 @@ class _GreetingsPageState extends State<GreetingsPage>
                 const Padding(
                     padding: EdgeInsets.only(top: 40),
                     child: Column(
-                      
                       children: [
                         Text(
-                          textAlign: TextAlign.center,
+                            textAlign: TextAlign.center,
                             style: TextStyle(
-                              
                                 shadows: [
                                   Shadow(
                                     color: Colors
@@ -95,6 +95,7 @@ class _GreetingsPageState extends State<GreetingsPage>
                     children: [
                       ElevatedButton(
                         onPressed: () {
+                          // ping();
                           Navigator.pushReplacementNamed(context, '/login');
                         },
                         child: const Padding(
@@ -114,7 +115,7 @@ class _GreetingsPageState extends State<GreetingsPage>
                                 color: Color(0xFFF4F4FB),
                                 fontSize: 24,
                                 fontWeight: FontWeight.w300),
-                            'Buy books, be smart'),
+                            '©Buy books, be smart'),
                       )
                     ],
                   ),

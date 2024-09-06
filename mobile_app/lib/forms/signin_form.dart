@@ -1,4 +1,11 @@
+import 'dart:io';
+
+import 'package:bookshopapp/api/server_api.dart';
+import 'package:bookshopapp/widgets/login_styled_text_field.dart';
+import 'package:bookshopapp/widgets/pass_styled_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({super.key});
@@ -13,6 +20,25 @@ class _SignInFormState extends State<SignInForm> {
   final TextEditingController loginController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  Future<void> loginPressed() async {
+    try {
+      final tokens =
+          await tryAuthenticate(loginController.text, passwordController.text);
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('refresh_token', tokens.refresh);
+      prefs.setString('access_token', tokens.access);
+
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    } on HttpException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     const Color borderColor = Color.fromARGB(153, 94, 105, 238);
@@ -26,49 +52,25 @@ class _SignInFormState extends State<SignInForm> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: TextField(
+              LoginStyledTextField(
                   controller: loginController,
-                  style: const TextStyle(color: textColor),
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.account_circle,
-                      color: borderColor,
-                    ),
-                    hintStyle: TextStyle(color: hintColor),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: borderColor, width: 2.0),
-                        borderRadius: BorderRadius.all(Radius.circular(30))),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: borderColor, width: 3.0),
-                        borderRadius: BorderRadius.all(Radius.circular(30))),
-                    hintText: "Enter email",
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: TextField(
-                  obscureText: true,
+                  validator: (value) => null,
+                  padding: const EdgeInsets.only(bottom: 10),
+                  textColor: textColor,
+                  hintColor: hintColor,
+                  borderColor: borderColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(30)),
+                  hintText: 'example@gmail.com',
+                  prefixIconData: Icons.account_circle),
+              StyledPassTextField(
                   controller: passwordController,
-                  style: const TextStyle(color: textColor),
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.lock,
-                      color: borderColor,
-                    ),
-                    hintStyle: TextStyle(color: hintColor),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: borderColor, width: 2.0),
-                        borderRadius: BorderRadius.all(Radius.circular(30))),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: borderColor, width: 3.0),
-                        borderRadius: BorderRadius.all(Radius.circular(30))),
-                    hintText: "Enter password",
-                  ),
-                ),
-              ),
+                  validator: (value) => null,
+                  padding: const EdgeInsets.only(bottom: 10),
+                  textColor: textColor,
+                  hintColor: hintColor,
+                  borderColor: borderColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(30)),
+                  hintText: 'Enter Password'),
               const Padding(
                 padding: EdgeInsets.only(bottom: 30),
                 child: Text(
@@ -83,10 +85,10 @@ class _SignInFormState extends State<SignInForm> {
               FractionallySizedBox(
                 widthFactor: 1.0,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: loginPressed,
                   child: const Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                       child: Text(
                           style: TextStyle(
                               fontWeight: FontWeight.w700,
