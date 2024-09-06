@@ -2,6 +2,7 @@ import 'package:bookshopapp/api/server_api.dart' as server_api;
 import 'package:bookshopapp/forms/settings_form.dart';
 import 'package:bookshopapp/forms/signin_form.dart';
 import 'package:bookshopapp/forms/signup_form.dart';
+import 'package:bookshopapp/api/globals.dart' as globals;
 import 'package:bookshopapp/widgets/login_styled_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -28,7 +29,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   void loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     final host = prefs.getString('server_host') ?? 'localhost';
-    server_api.serverHost = host;
+    globals.serverHost = host;
   }
 
   @override

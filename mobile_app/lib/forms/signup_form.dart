@@ -23,21 +23,22 @@ class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController passController = TextEditingController();
 
   Future<void> signUpPressed() async {
-    final Response response = await tryRegister(User(
-        firstName: firstNameController.text,
-        lastName: lastNameController.text,
-        email: emailController.text,
-        password: passController.text,
-        phone: phoneController.text));
-    if (response.statusCode == HttpStatus.created) {
+    try {
+      await tryRegister(User(
+          firstName: firstNameController.text,
+          lastName: lastNameController.text,
+          email: emailController.text,
+          password: passController.text,
+          phone: phoneController.text));
+
       if (mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text('Signed Up!')));
       }
-    } else {
+    } on HttpException catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Something went wrong. Maybe app is upset.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(e.toString())));
       }
     }
   }

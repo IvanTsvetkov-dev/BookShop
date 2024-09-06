@@ -5,6 +5,7 @@ import 'package:bookshopapp/widgets/login_styled_text_field.dart';
 import 'package:bookshopapp/widgets/pass_styled_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({super.key});
@@ -20,20 +21,20 @@ class _SignInFormState extends State<SignInForm> {
   final TextEditingController passwordController = TextEditingController();
 
   Future<void> loginPressed() async {
-    final Response response =
-        await tryAuthenticate(loginController.text, passwordController.text);
-    if (response.statusCode == HttpStatus.ok) {
+    try {
+      final tokens =
+          await tryAuthenticate(loginController.text, passwordController.text);
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('refresh_token', tokens.refresh);
+      prefs.setString('access_token', tokens.access);
+
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Authorized')));
         Navigator.pushReplacementNamed(context, '/home');
       }
-      
-    }
-    else{
+    } on HttpException catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Unauthorized')));
+            .showSnackBar(SnackBar(content: Text(e.toString())));
       }
     }
   }

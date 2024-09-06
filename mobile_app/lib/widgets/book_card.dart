@@ -2,10 +2,28 @@ import 'package:bookshopapp/api/constants.dart' as constants;
 import 'package:bookshopapp/models/Book.dart';
 import 'package:flutter/material.dart';
 
-class BookCard extends StatelessWidget {
+class BookCard extends StatefulWidget {
   const BookCard({super.key, required this.book});
 
   final Book book;
+
+  @override
+  State<BookCard> createState() => _BookCardState();
+}
+
+class _BookCardState extends State<BookCard> {
+  bool addedToCard = false;
+  bool addedToFavourites = false;
+
+  IconData getFavouritesIcon() {
+    return (addedToFavourites)
+        ? Icons.favorite
+        : Icons.favorite_border_outlined;
+  }
+
+  IconData getAddToCartIcon() {
+    return (addedToCard) ? Icons.check : Icons.add;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +38,19 @@ class BookCard extends StatelessWidget {
             Uri(
                     scheme: 'https',
                     host: constants.serverHost,
-                    path: book.image)
+                    path: widget.book.image)
                 .toString(),
             width: 50,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
-              return const Icon(Icons.error, size: 50);
+              return FractionallySizedBox(
+                heightFactor: 1.0,
+                child: SizedBox(
+                  width: 50,
+                  child: DecoratedBox(
+                      decoration: BoxDecoration(color: Colors.grey[300])),
+                ),
+              );
             },
           ),
           Expanded(
@@ -37,14 +62,14 @@ class BookCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    book.title,
+                    widget.book.title,
                     style: const TextStyle(
                         fontWeight: FontWeight.w700, fontSize: 16),
                   ),
-                  Text(book.author,
+                  Text(widget.book.author,
                       style: const TextStyle(
                           fontWeight: FontWeight.w700, fontSize: 12)),
-                  Text('${book.price}\$',
+                  Text('${widget.book.price}\$',
                       style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 10,
@@ -59,15 +84,23 @@ class BookCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.favorite_border_outlined,
+                    onPressed: () {
+                      setState(() {
+                        addedToFavourites = !addedToFavourites;
+                      });
+                    },
+                    icon: Icon(
+                      getFavouritesIcon(),
                       color: iconColor,
                     )),
                 IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.add,
+                    onPressed: () {
+                      setState(() {
+                        addedToCard = !addedToCard;
+                      });
+                    },
+                    icon: Icon(
+                      getAddToCartIcon(),
                       color: iconColor,
                     ))
               ],

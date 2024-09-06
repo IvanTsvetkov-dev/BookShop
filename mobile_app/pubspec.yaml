@@ -66,6 +66,7 @@ flutter:
   assets:
     - assets/signup.json
     - assets/splash.json
+    - assets/quote_anim.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
