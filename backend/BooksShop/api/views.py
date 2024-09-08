@@ -17,6 +17,7 @@ class BookViewSet(mixins.ListModelMixin,
     
     queryset = models.Book.objects.all()
 
+
 class BasketViewSet(mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
                     mixins.ListModelMixin,
@@ -26,7 +27,10 @@ class BasketViewSet(mixins.RetrieveModelMixin,
     serializer_class = BasketSerializer
     
     def get_queryset(self):
+        print(self.request.user.id)
         return models.Basket.objects.filter(user_id=self.request.user.id)
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
     
 class RandomQuote(APIView):
     def get(self, request):
