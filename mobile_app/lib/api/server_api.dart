@@ -1,15 +1,33 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:bookshopapp/models/Book.dart';
+import 'package:bookshopapp/api/unauthorized_exception.dart';
+import 'package:bookshopapp/models/book.dart';
 import 'package:bookshopapp/models/quote.dart';
 import 'package:bookshopapp/models/tokens.dart';
 import 'package:bookshopapp/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'globals.dart' as globals;
 
 Future<Response> pingServer(Uri serverUri) {
   return get(serverUri);
+}
+
+Future<String> updateAccessToken(String refreshToken) async {
+  final Uri serverUri = Uri.http(globals.serverHost, 'auth/jwt/refresh/');
+  final response = await post(serverUri,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'refresh': refreshToken})).timeout(
+    const Duration(seconds: 10),
+    onTimeout: () => Response('timeout', HttpStatus.requestTimeout),
+  );
+  if (response.statusCode == HttpStatus.ok) {
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    return body['access'] as String;
+  } else {
+    throw HttpException('Error Code ${response.statusCode}');
+  }
 }
 
 Future<Tokens> tryAuthenticate(String username, String password) async {
@@ -67,8 +85,69 @@ Future<Quote> getRandomQuote() async {
   }
 }
 
+Future<List<Map<String, dynamic>>> getCartContents(String accessToken) async {
+  final Uri serverUri = Uri.http(globals.serverHost, 'api/v1/basket/');
+  final List<Map<String, dynamic>> result = List.empty(growable: true);
+
+  final response =
+      await get(serverUri, headers: {'Authorization': 'Bearer $accessToken'})
+          .timeout(const Duration(seconds: 10),
+              onTimeout: () => Response('timeout', HttpStatus.requestTimeout));
+  if (response.statusCode == HttpStatus.ok) {
+    // debugPrint(response.body);
+    // debugPrint(globals.accesToken);
+    final listJson = jsonDecode(response.body) as List<dynamic>;
+    for (var objJson in listJson) {
+      final obj = objJson as Map<String, dynamic>;
+      result.add(obj);
+    }
+    return result;
+  } else if (response.statusCode == HttpStatus.unauthorized) {
+    throw const UnauthorizedException('');
+  } else {
+    throw HttpException('Error Code ${response.statusCode}');
+  }
+}
+
+Future<Book> getBookById(int id) async {
+  final Uri serverUri = Uri.http(globals.serverHost, 'api/v1/book/$id/');
+  final response = await get(serverUri).timeout(const Duration(seconds: 10),
+      onTimeout: () => Response('timeout', HttpStatus.requestTimeout));
+  if (response.statusCode == HttpStatus.ok) {
+    final bookJson = jsonDecode(response.body) as Map<String, dynamic>;
+    return Book(
+        id: id,
+        title: bookJson['title'],
+        author: bookJson['author'],
+        image: bookJson['image'],
+        price: bookJson['price'],
+        countInStorage: bookJson['count_in_storage']);
+  } else {
+    throw HttpException('Error Code ${response.statusCode}');
+  }
+}
+
+Future<void> addToCart(int bookId, int count) async {
+  final Uri serverUri = Uri.http(globals.serverHost, 'api/v1/basket/');
+  final prefs = await SharedPreferences.getInstance();
+  final accessToken = prefs.getString('access_token');
+
+  final response = await post(serverUri, headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $accessToken'
+  }, body: jsonEncode({
+    'book_id': bookId,
+    'count': count
+  })).timeout(const Duration(seconds: 10),
+      onTimeout: () => Response('timeout', HttpStatus.requestTimeout));
+  if (response.statusCode == HttpStatus.ok) {
+  } else {
+    throw HttpException('Error Code ${response.statusCode}');
+  }
+}
+
 Future<List<Book>> fetchBookList() async {
-  final Uri serverUri = Uri.http(globals.serverHost, 'api/v1/book');
+  final Uri serverUri = Uri.http(globals.serverHost, 'api/v1/book/');
   final response = await get(serverUri).timeout(const Duration(seconds: 10),
       onTimeout: () => Response('timeout', HttpStatus.requestTimeout));
 
