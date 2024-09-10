@@ -1,5 +1,5 @@
-import 'package:bookshopapp/api/constants.dart' as constants;
-import 'package:bookshopapp/models/Book.dart';
+import 'package:bookshopapp/api/globals.dart' as globals;
+import 'package:bookshopapp/models/book.dart';
 import 'package:flutter/material.dart';
 
 class BookCard extends StatefulWidget {
@@ -35,11 +35,7 @@ class _BookCardState extends State<BookCard> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image.network(
-            Uri(
-                    scheme: 'https',
-                    host: constants.serverHost,
-                    path: widget.book.image)
-                .toString(),
+            widget.book.image,
             width: 50,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {

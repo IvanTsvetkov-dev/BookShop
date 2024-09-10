@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bookshopapp/api/server_api.dart';
-import 'package:bookshopapp/models/Book.dart';
+import 'package:bookshopapp/models/book.dart';
 import 'package:bookshopapp/models/quote.dart';
 import 'package:bookshopapp/widgets/book_card.dart';
 import 'package:bookshopapp/widgets/book_loading_card.dart';
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
       case 0:
         return [
           IconButton(
-              onPressed: () {},
+              onPressed: openCartPressed,
               icon: const Icon(
                 Icons.shopping_basket,
                 color: Colors.white,
@@ -83,6 +83,12 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.white,
               ))
         ];
+    }
+  }
+
+  openCartPressed(){
+    if (mounted){
+      Navigator.pushNamed(context, '/cart');
     }
   }
 
