@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from BooksShop.docs import docurl_patterns
 
 from api import views
 from users.views import CustomUserCreate
@@ -29,3 +30,4 @@ api_patterns = [
 ]
 api_patterns += router.urls
 api_patterns += router_custom.urls
+api_patterns += docurl_patterns
