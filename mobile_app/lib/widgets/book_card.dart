@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:bookshopapp/api/globals.dart' as globals;
+import 'package:bookshopapp/api/server_api.dart';
 import 'package:bookshopapp/models/book.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +26,24 @@ class _BookCardState extends State<BookCard> {
 
   IconData getAddToCartIcon() {
     return (addedToCard) ? Icons.check : Icons.add;
+  }
+
+  Future<void> addToCartFromRec(int bookId) async {
+    try {
+      await addToCart(bookId, 1);
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Added to cart')));
+      }
+      setState(() {
+        addedToCard = true;
+      });
+    } on HttpException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    }
   }
 
   @override
@@ -91,9 +112,7 @@ class _BookCardState extends State<BookCard> {
                     )),
                 IconButton(
                     onPressed: () {
-                      setState(() {
-                        addedToCard = !addedToCard;
-                      });
+                      addToCartFromRec(widget.book.id);
                     },
                     icon: Icon(
                       getAddToCartIcon(),

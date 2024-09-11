@@ -5,6 +5,7 @@ import 'package:bookshopapp/widgets/login_styled_text_field.dart';
 import 'package:bookshopapp/widgets/pass_styled_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:bookshopapp/api/globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInForm extends StatefulWidget {
@@ -27,6 +28,8 @@ class _SignInFormState extends State<SignInForm> {
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('refresh_token', tokens.refresh);
       prefs.setString('access_token', tokens.access);
+      globals.accessToken = tokens.access;
+      globals.refreshToken = tokens.refresh;
 
       if (mounted) {
         Navigator.pushReplacementNamed(context, '/home');

@@ -1,12 +1,24 @@
+import 'dart:io';
+
+import 'package:bookshopapp/api/server_api.dart';
 import 'package:bookshopapp/models/book.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class BookInCartCard extends StatefulWidget {
   const BookInCartCard(
-      {super.key, required this.initialCount, required this.book});
+      {super.key,
+      required this.initialCount,
+      required this.book,
+      required this.deleteCallback,
+      required this.selectCallback, 
+      required this.countChangedCallback});
 
   final int initialCount;
   final Book book;
+  final Future<void> Function(Book) deleteCallback;
+  final Function(Book, bool, int) selectCallback;
+  final Function(Book, int) countChangedCallback;
 
   @override
   State<BookInCartCard> createState() => _BookInCartCardState();
@@ -20,6 +32,37 @@ class _BookInCartCardState extends State<BookInCartCard> {
   void initState() {
     super.initState();
     count = widget.initialCount;
+  }
+
+  void increaseBookCount() async {
+    try {
+      await editCartContents(widget.book.id, count + 1);
+      setState(() {
+        count += 1;
+      });
+      widget.countChangedCallback(widget.book, count);
+    } on HttpException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    }
+  }
+
+  void decreaseBookCount() async {
+    if (count <= 0) return;
+    try {
+      await editCartContents(widget.book.id, count - 1);
+      setState(() {
+        count -= 1;
+      });
+      widget.countChangedCallback(widget.book, count);
+    } on HttpException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    }
   }
 
   @override
@@ -38,6 +81,7 @@ class _BookInCartCardState extends State<BookInCartCard> {
                   setState(() {
                     checkboxValue = value!;
                   });
+                  widget.selectCallback(widget.book, checkboxValue, count);
                 }),
             SizedBox(
               width: 80,
@@ -67,7 +111,9 @@ class _BookInCartCardState extends State<BookInCartCard> {
                                     fontSize: 18, fontWeight: FontWeight.w700),
                               )),
                               IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    widget.deleteCallback(widget.book);
+                                  },
                                   icon: Icon(
                                     Icons.close,
                                     color:
@@ -126,7 +172,7 @@ class _BookInCartCardState extends State<BookInCartCard> {
                                       iconSize: 14,
                                       icon: const Icon(Icons.remove),
                                       color: Colors.black,
-                                      onPressed: () {},
+                                      onPressed: decreaseBookCount,
                                     ),
                                   ),
                                 ),
@@ -159,7 +205,7 @@ class _BookInCartCardState extends State<BookInCartCard> {
                                       iconSize: 14,
                                       icon: const Icon(Icons.add),
                                       color: Colors.black,
-                                      onPressed: () {},
+                                      onPressed: increaseBookCount,
                                     ),
                                   ),
                                 ),

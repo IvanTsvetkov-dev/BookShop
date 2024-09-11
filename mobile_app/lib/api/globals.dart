@@ -1,3 +1,3 @@
-String accesToken = '';
+String accessToken = '';
 String refreshToken = '';
 String serverHost = '';

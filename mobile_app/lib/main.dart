@@ -22,7 +22,7 @@ void main() async {
 
     try {
       final accessToken = await updateAccessToken(refreshToken);
-      globals.accesToken = accessToken;
+      globals.accessToken = accessToken;
     } on UnauthorizedException catch (e) {
       initialRoute = '/login';
     }

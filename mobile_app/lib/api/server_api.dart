@@ -26,7 +26,7 @@ Future<String> updateAccessToken(String refreshToken) async {
     final body = jsonDecode(response.body) as Map<String, dynamic>;
     return body['access'] as String;
   } else {
-    throw HttpException('Error Code ${response.statusCode}');
+    throw UnauthorizedException('Error Code ${response.statusCode}');
   }
 }
 
@@ -127,21 +127,50 @@ Future<Book> getBookById(int id) async {
   }
 }
 
+Future<void> deleteFromCart(int bookId) async {
+  final Uri serverUri = Uri.http(globals.serverHost, 'api/v1/basket/$bookId/');
+
+  final response = await delete(
+    serverUri,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${globals.accessToken}'
+    },
+  ).timeout(const Duration(seconds: 10),
+      onTimeout: () => Response('timeout', HttpStatus.requestTimeout));
+  if (response.statusCode != HttpStatus.noContent) {
+    throw HttpException('Error Code ${response.statusCode}');
+  }
+}
+
+Future<void> editCartContents(int bookId, int count) async {
+  final Uri serverUri = Uri.http(globals.serverHost, 'api/v1/basket/$bookId/');
+
+  final response = await patch(serverUri,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ${globals.accessToken}'
+          },
+          body: jsonEncode({'book_id': bookId, 'count': count}))
+      .timeout(const Duration(seconds: 10),
+          onTimeout: () => Response('timeout', HttpStatus.requestTimeout));
+  if (response.statusCode != HttpStatus.ok) {
+    throw HttpException('Error Code ${response.statusCode}');
+  }
+}
+
 Future<void> addToCart(int bookId, int count) async {
   final Uri serverUri = Uri.http(globals.serverHost, 'api/v1/basket/');
-  final prefs = await SharedPreferences.getInstance();
-  final accessToken = prefs.getString('access_token');
 
-  final response = await post(serverUri, headers: {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer $accessToken'
-  }, body: jsonEncode({
-    'book_id': bookId,
-    'count': count
-  })).timeout(const Duration(seconds: 10),
-      onTimeout: () => Response('timeout', HttpStatus.requestTimeout));
-  if (response.statusCode == HttpStatus.ok) {
-  } else {
+  final response = await post(serverUri,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ${globals.accessToken}'
+          },
+          body: jsonEncode({'book_id': bookId, 'count': count}))
+      .timeout(const Duration(seconds: 10),
+          onTimeout: () => Response('timeout', HttpStatus.requestTimeout));
+  if (response.statusCode != HttpStatus.created) {
     throw HttpException('Error Code ${response.statusCode}');
   }
 }
