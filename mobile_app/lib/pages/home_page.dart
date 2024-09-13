@@ -1,14 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bookshopapp/api/cart_contents_controller.dart';
 import 'package:bookshopapp/api/server_api.dart';
 import 'package:bookshopapp/models/book.dart';
 import 'package:bookshopapp/models/quote.dart';
+import 'package:bookshopapp/pages/cart_page.dart';
 import 'package:bookshopapp/widgets/book_card.dart';
 import 'package:bookshopapp/widgets/book_loading_card.dart';
 import 'package:bookshopapp/widgets/quote_card.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:bookshopapp/api/globals.dart' as globals;
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,15 +28,47 @@ class _HomePageState extends State<HomePage> {
   int currentPageIndex = 0;
   List<WidgetBuilder> pages = List.empty(growable: true);
   List<String> titles = ['Home', 'Favourites', 'Account'];
+  CartContentsController cartContentsController = CartContentsController();
 
-  late Future<List<Book>> futureBookList;
+  late Future<List<Book>> recomendedFutureBookList;
+
+  Future<List<Book>> getRecommendedBooks() async {
+    try {
+      final bookList = await fetchBookList();
+
+      return bookList;
+    } on HttpException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message)));
+      }
+      return List.empty();
+    }
+  }
+
+  void initCartContents() async {
+    try {
+      await cartContentsController.initContents();
+    } on HttpException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    } on SocketException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    }
+  }
 
   @override
   void initState() {
     pages.add(buildHomePage);
     pages.add(buildFavouritesPage);
     pages.add(buildAccountPage);
-    futureBookList = fetchBookList();
+    recomendedFutureBookList = getRecommendedBooks();
+    initCartContents();
     super.initState();
   }
   /*
@@ -86,9 +121,14 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  openCartPressed(){
-    if (mounted){
-      Navigator.pushNamed(context, '/cart');
+  openCartPressed() {
+    if (mounted) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                CartPage(cartContentsController: cartContentsController),
+          ));
     }
   }
 
@@ -184,7 +224,7 @@ class _HomePageState extends State<HomePage> {
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: FutureBuilder(
-                future: futureBookList,
+                future: recomendedFutureBookList,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final bookList = snapshot.data as List<Book>;
@@ -194,15 +234,16 @@ class _HomePageState extends State<HomePage> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: bookList.length,
                         itemBuilder: (BuildContext context, int index) {
+                          final book = bookList[index];
                           return BookCard(
+                            cartContentsController: cartContentsController,
+                            isInCartInitially: false,
                             book: bookList[index],
                           );
                         });
-                  } 
-                  else if (snapshot.hasError) {
+                  } else if (snapshot.hasError) {
                     return Center(child: Text(snapshot.error.toString()));
-                  } 
-                  else {
+                  } else {
                     return ListView.builder(
                         shrinkWrap: true,
                         primary: false,

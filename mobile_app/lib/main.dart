@@ -58,7 +58,6 @@ class EntryPoint extends StatelessWidget {
         '/greetings': (context) => const GreetingsPage(),
         '/login': (context) => const LoginPage(),
         '/home': (context) => const HomePage(),
-        '/cart': (context) => const CartPage()
       },
     );
   }

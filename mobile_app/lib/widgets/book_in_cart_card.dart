@@ -11,7 +11,7 @@ class BookInCartCard extends StatefulWidget {
       required this.initialCount,
       required this.book,
       required this.deleteCallback,
-      required this.selectCallback, 
+      required this.selectCallback,
       required this.countChangedCallback});
 
   final int initialCount;
@@ -83,10 +83,17 @@ class _BookInCartCardState extends State<BookInCartCard> {
                   });
                   widget.selectCallback(widget.book, checkboxValue, count);
                 }),
-            SizedBox(
+            Image.network(
+              widget.book.image,
               width: 80,
-              child: DecoratedBox(
-                  decoration: BoxDecoration(color: Colors.grey[300])),
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return SizedBox(
+                  width: 80,
+                  child: DecoratedBox(
+                      decoration: BoxDecoration(color: Colors.grey[300])),
+                );
+              },
             ),
             Expanded(
               child: Padding(

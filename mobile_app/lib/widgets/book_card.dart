@@ -1,14 +1,21 @@
 import 'dart:io';
 
+import 'package:bookshopapp/api/cart_contents_controller.dart';
 import 'package:bookshopapp/api/globals.dart' as globals;
 import 'package:bookshopapp/api/server_api.dart';
 import 'package:bookshopapp/models/book.dart';
 import 'package:flutter/material.dart';
 
 class BookCard extends StatefulWidget {
-  const BookCard({super.key, required this.book});
+  const BookCard(
+      {super.key,
+      required this.book,
+      required this.isInCartInitially,
+      required this.cartContentsController});
 
   final Book book;
+  final bool isInCartInitially;
+  final CartContentsController cartContentsController;
 
   @override
   State<BookCard> createState() => _BookCardState();
@@ -24,13 +31,13 @@ class _BookCardState extends State<BookCard> {
         : Icons.favorite_border_outlined;
   }
 
-  IconData getAddToCartIcon() {
-    return (addedToCard) ? Icons.check : Icons.add;
+  IconData getAddToCartIcon(bool inCart) {
+    return (inCart) ? Icons.check : Icons.add;
   }
 
   Future<void> addToCartFromRec(int bookId) async {
     try {
-      await addToCart(bookId, 1);
+      await widget.cartContentsController.add(bookId, 1);
       if (mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text('Added to cart')));
@@ -44,6 +51,12 @@ class _BookCardState extends State<BookCard> {
             .showSnackBar(SnackBar(content: Text(e.message)));
       }
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    addedToCard = widget.isInCartInitially;
   }
 
   @override
@@ -110,14 +123,24 @@ class _BookCardState extends State<BookCard> {
                       getFavouritesIcon(),
                       color: iconColor,
                     )),
-                IconButton(
-                    onPressed: () {
-                      addToCartFromRec(widget.book.id);
-                    },
-                    icon: Icon(
-                      getAddToCartIcon(),
-                      color: iconColor,
-                    ))
+                ListenableBuilder(
+                  listenable: widget.cartContentsController,
+                  builder: (context, child) {
+                    final inCart = widget.cartContentsController
+                        .hasBookWithId(widget.book.id);
+
+                    return IconButton(
+                        onPressed: (!inCart)
+                            ? () {
+                                addToCartFromRec(widget.book.id);
+                              }
+                            : null,
+                        icon: Icon(
+                          getAddToCartIcon(inCart),
+                          color: (inCart) ? Colors.grey : iconColor,
+                        ));
+                  },
+                )
               ],
             ),
           )

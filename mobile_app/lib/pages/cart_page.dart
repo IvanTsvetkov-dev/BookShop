@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bookshopapp/api/cart_contents_controller.dart';
 import 'package:bookshopapp/api/server_api.dart';
 import 'package:bookshopapp/api/unauthorized_exception.dart';
 import 'package:bookshopapp/models/book.dart';
@@ -8,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:bookshopapp/api/globals.dart' as globals;
 
 class CartPage extends StatefulWidget {
-  const CartPage({super.key});
+  const CartPage({super.key, required this.cartContentsController});
+
+  final CartContentsController cartContentsController;
 
   @override
   State<CartPage> createState() => _CartPageState();
@@ -96,13 +99,33 @@ class _CartPageState extends State<CartPage> {
                 ]);
           });
       if (delete != null && delete) {
-        await deleteFromCart(book.id);
+        await widget.cartContentsController.remove(book);
         setState(() {
-          loadedContents.remove(book);
           selectedBooks.remove(book);
         });
       }
     } on HttpException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    } on SocketException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    }
+  }
+
+  Future<void> initCartContents() async {
+    try {
+      await widget.cartContentsController.initContents();
+    } on HttpException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    } on SocketException catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.message)));
@@ -114,6 +137,7 @@ class _CartPageState extends State<CartPage> {
   void initState() {
     super.initState();
     cartContentsFuture = getCartContentsFromServer();
+    initCartContents();
   }
 
   @override
@@ -129,40 +153,35 @@ class _CartPageState extends State<CartPage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Stack(
+      body: Column(
         children: [
-          SingleChildScrollView(
-            child: FutureBuilder(
-              future: cartContentsFuture,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  var cartContents = snapshot.data;
-                  if (loadedContents.isEmpty) {
-                    loadedContents = (cartContents != null) ? cartContents : {};
-                  }
-
-                  return ListView.builder(
-                      shrinkWrap: true,
-                      primary: false,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: loadedContents.length,
+          Expanded(
+              child: ListenableBuilder(
+            listenable: widget.cartContentsController,
+            builder: (context, child) {
+              return RefreshIndicator(
+                  child: ListView.builder(
+                      // shrinkWrap: true,
+                      // primary: false,
+                      itemCount:
+                          widget.cartContentsController.loadedContents.length,
                       itemBuilder: (BuildContext context, int index) {
-                        final book = loadedContents.keys.toList()[index];
+                        final book = widget
+                            .cartContentsController.loadedContents.keys
+                            .toList()[index];
                         return BookInCartCard(
                             countChangedCallback: onBookCountChanged,
                             selectCallback: onBookSelected,
                             deleteCallback: deleteBookFromCart,
-                            initialCount: loadedContents[book]!,
+                            initialCount: widget
+                                .cartContentsController.loadedContents[book]!,
                             book: book);
-                      });
-                } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
-            ),
-          ),
+                      }),
+                  onRefresh: () async {
+                    await initCartContents();
+                  });
+            },
+          )),
           Visibility(
               visible: selectedBooks.isNotEmpty,
               child: Align(
