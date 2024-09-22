@@ -2,6 +2,7 @@ from datetime import date, timedelta
 from api.serializers import BasketSerializer, BookSerializer, RandomQuoteSerializer
 from rest_framework import mixins
 from api.taskForQuote import activate_quote, get_actual_quote
+from api.pagination import BookViewSetPagination
 from book import models
 from django.core.exceptions import *
 from rest_framework import viewsets
@@ -16,6 +17,8 @@ class BookViewSet(mixins.ListModelMixin,
     serializer_class = BookSerializer
     
     queryset = models.Book.objects.all()
+    
+    pagination_class = BookViewSetPagination
 
 
 class BasketViewSet(mixins.RetrieveModelMixin,

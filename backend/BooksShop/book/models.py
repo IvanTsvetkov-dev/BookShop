@@ -48,6 +48,20 @@ class Book(models.Model):
         default=""
     )
     
+    description = models.TextField(
+        null=True
+    )
+    
+    rate = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        null=True
+        
+    )
+    
+    
+    
+    
     def __str__(self):
         name = f"{self.author} {self.title}"
         return name
