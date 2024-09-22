@@ -4,7 +4,7 @@ from rest_framework import serializers
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
-        fields = ['id', 'title', 'author', 'image', 'price', 'count_in_storage']
+        fields = ['id', 'title', 'author', 'image', 'price', 'count_in_storage', 'description', 'rate']
 
 class BasketSerializer(serializers.ModelSerializer):
     class Meta:
