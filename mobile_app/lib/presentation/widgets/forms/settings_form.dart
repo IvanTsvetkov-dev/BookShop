@@ -1,5 +1,5 @@
-import 'package:bookshopapp/api/globals.dart' as globals;
-import 'package:bookshopapp/widgets/login_styled_text_field.dart';
+import 'package:bookshopapp/core/app_enviroment.dart';
+import 'package:bookshopapp/presentation/widgets/login_styled_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,7 +18,7 @@ class _HostSettginsFormState extends State<HostSettginsForm> {
     final host = _hostFieldController.text;
 
     prefs.setString('server_host', host);
-    globals.serverHost = host;
+    AppEnviroment.serverHost = host;
     if (mounted) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('Saved')));
@@ -28,7 +28,7 @@ class _HostSettginsFormState extends State<HostSettginsForm> {
   void loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     final host = prefs.getString('server_host') ?? 'localhost';
-    globals.serverHost = host;
+    AppEnviroment.serverHost = host;
 
     setState(() {
       _hostFieldController.text = host;
