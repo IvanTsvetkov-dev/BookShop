@@ -7,6 +7,14 @@ import 'package:bookshopapp/api/globals.dart' as globals;
 
 class CartContentsController extends ChangeNotifier {
   Map<Book, int> loadedContents = {};
+  static final CartContentsController _instance =
+      CartContentsController._internal();
+
+  factory CartContentsController() {
+    return _instance;
+  }
+
+  CartContentsController._internal();
 
   Future<void> initContents() async {
     final List<Map<String, dynamic>> cartInfo =
@@ -27,7 +35,7 @@ class CartContentsController extends ChangeNotifier {
 
   Future<void> remove(Book book) async {
     await deleteFromCart(book.id);
-    loadedContents.remove(book);
+    loadedContents.removeWhere((key, value) => key.id == book.id,);
     notifyListeners();
   }
 
