@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:bookshopapp/api/cart_contents_controller.dart';
-import 'package:bookshopapp/models/book.dart';
+import 'package:bookshopapp/core/cart_contents_controller.dart';
+import 'package:bookshopapp/data/models/book.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 

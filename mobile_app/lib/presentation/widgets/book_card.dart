@@ -1,10 +1,8 @@
 import 'dart:io';
 
-import 'package:bookshopapp/api/cart_contents_controller.dart';
-import 'package:bookshopapp/api/globals.dart' as globals;
-import 'package:bookshopapp/api/server_api.dart';
-import 'package:bookshopapp/models/book.dart';
-import 'package:bookshopapp/pages/book_page.dart';
+import 'package:bookshopapp/core/cart_contents_controller.dart';
+import 'package:bookshopapp/data/models/book.dart';
+import 'package:bookshopapp/presentation/pages/book_page.dart';
 import 'package:flutter/material.dart';
 
 class BookCard extends StatefulWidget {

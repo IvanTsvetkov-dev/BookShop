@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:bookshopapp/api/cart_contents_controller.dart';
-import 'package:bookshopapp/api/server_api.dart';
-import 'package:bookshopapp/api/unauthorized_exception.dart';
-import 'package:bookshopapp/models/book.dart';
-import 'package:bookshopapp/widgets/book_in_cart_card.dart';
+import 'package:bookshopapp/core/cart_contents_controller.dart';
+import 'package:bookshopapp/api%5Blegacy%5D/server_api.dart';
+import 'package:bookshopapp/core/app_enviroment.dart';
+import 'package:bookshopapp/core/exception/unauthorized_exception.dart';
+import 'package:bookshopapp/data/models/book.dart';
+import 'package:bookshopapp/presentation/widgets/book_in_cart_card.dart';
 import 'package:flutter/material.dart';
-import 'package:bookshopapp/api/globals.dart' as globals;
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key, required this.cartContentsController});
@@ -25,7 +25,7 @@ class _CartPageState extends State<CartPage> {
   Future<Map<Book, int>> getCartContentsFromServer() async {
     try {
       final List<Map<String, dynamic>> cartInfo =
-          await getCartContents(globals.accessToken);
+          await getCartContents(AppEnviroment.tokens.access);
       final Map<Book, int> result = {};
       if (cartInfo.isEmpty) {
         return result;

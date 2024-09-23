@@ -1,5 +1,5 @@
-import 'package:bookshopapp/api/server_api.dart';
-import 'package:bookshopapp/models/quote.dart';
+import 'package:bookshopapp/api%5Blegacy%5D/server_api.dart';
+import 'package:bookshopapp/data/models/quote.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 

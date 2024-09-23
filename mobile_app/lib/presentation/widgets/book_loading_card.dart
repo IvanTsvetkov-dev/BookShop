@@ -1,4 +1,3 @@
-import 'package:bookshopapp/api/constants.dart' as constants;
 import 'package:flutter/material.dart';
 
 class BookLoadingCard extends StatelessWidget {

@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:bookshopapp/api/server_api.dart';
-import 'package:bookshopapp/models/user.dart';
-import 'package:bookshopapp/widgets/login_styled_text_field.dart';
-import 'package:bookshopapp/widgets/pass_styled_text_field.dart';
+import 'package:bookshopapp/api%5Blegacy%5D/server_api.dart';
+import 'package:bookshopapp/data/models/user.dart';
+import 'package:bookshopapp/presentation/widgets/login_styled_text_field.dart';
+import 'package:bookshopapp/presentation/widgets/pass_styled_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 

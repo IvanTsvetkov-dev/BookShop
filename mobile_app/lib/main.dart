@@ -1,10 +1,9 @@
-import 'package:bookshopapp/api/globals.dart' as globals;
-import 'package:bookshopapp/api/server_api.dart';
-import 'package:bookshopapp/api/unauthorized_exception.dart';
-import 'package:bookshopapp/pages/cart_page.dart';
-import 'package:bookshopapp/pages/greetings_page.dart';
-import 'package:bookshopapp/pages/home_page.dart';
-import 'package:bookshopapp/pages/login_page.dart';
+import 'package:bookshopapp/api%5Blegacy%5D/server_api.dart';
+import 'package:bookshopapp/core/app_enviroment.dart';
+import 'package:bookshopapp/core/exception/unauthorized_exception.dart';
+import 'package:bookshopapp/presentation/pages/greetings_page.dart';
+import 'package:bookshopapp/presentation/pages/home_page.dart';
+import 'package:bookshopapp/presentation/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,16 +12,16 @@ void main() async {
 
   final prefs = await SharedPreferences.getInstance();
   final refreshToken = prefs.getString('refresh_token') ?? '';
-  globals.serverHost = prefs.getString('server_host') ?? '';
+  AppEnviroment.serverHost = prefs.getString('server_host') ?? '';
   String initialRoute = '/greetings';
 
   if (refreshToken != '') {
-    globals.refreshToken = refreshToken;
+    AppEnviroment.tokens.refresh = refreshToken;
     initialRoute = '/home';
 
     try {
       final accessToken = await updateAccessToken(refreshToken);
-      globals.accessToken = accessToken;
+      AppEnviroment.tokens.access = accessToken;
     } on UnauthorizedException catch (e) {
       initialRoute = '/login';
     }

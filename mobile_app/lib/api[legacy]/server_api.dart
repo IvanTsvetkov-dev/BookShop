@@ -1,21 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:bookshopapp/api/unauthorized_exception.dart';
-import 'package:bookshopapp/models/book.dart';
-import 'package:bookshopapp/models/quote.dart';
-import 'package:bookshopapp/models/tokens.dart';
-import 'package:bookshopapp/models/user.dart';
+import 'package:bookshopapp/core/app_enviroment.dart';
+import 'package:bookshopapp/core/exception/unauthorized_exception.dart';
+import 'package:bookshopapp/data/models/book.dart';
+import 'package:bookshopapp/data/models/quote.dart';
+import 'package:bookshopapp/data/models/tokens.dart';
+import 'package:bookshopapp/data/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'globals.dart' as globals;
 
 Future<Response> pingServer(Uri serverUri) {
   return get(serverUri);
 }
 
 Future<String> updateAccessToken(String refreshToken) async {
-  final Uri serverUri = Uri.http(globals.serverHost, 'auth/jwt/refresh/');
+  final Uri serverUri = Uri.http(AppEnviroment.serverHost, 'auth/jwt/refresh/');
   final response = await post(serverUri,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'refresh': refreshToken})).timeout(
@@ -31,7 +31,7 @@ Future<String> updateAccessToken(String refreshToken) async {
 }
 
 Future<Tokens> tryAuthenticate(String username, String password) async {
-  final Uri serverUri = Uri.http(globals.serverHost, 'auth/jwt/create/');
+  final Uri serverUri = Uri.http(AppEnviroment.serverHost, 'auth/jwt/create/');
   final response = await post(serverUri,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'username': username, 'password': password})).timeout(
@@ -55,7 +55,7 @@ Future<Tokens> tryAuthenticate(String username, String password) async {
 }
 
 Future<void> tryRegister(User user) async {
-  final Uri serverUri = Uri.http(globals.serverHost, 'api/v1/create_user/');
+  final Uri serverUri = Uri.http(AppEnviroment.serverHost, 'api/v1/create_user/');
   final response = await post(serverUri,
           headers: {'Content-Type': 'application/json'}, body: user.toJson())
       .timeout(const Duration(seconds: 10),
@@ -66,7 +66,7 @@ Future<void> tryRegister(User user) async {
 }
 
 Future<Quote> getRandomQuote() async {
-  final Uri serverUri = Uri.http(globals.serverHost, 'api/v1/random_quote/');
+  final Uri serverUri = Uri.http(AppEnviroment.serverHost, 'api/v1/random_quote/');
   final response = await get(serverUri).timeout(const Duration(seconds: 10),
       onTimeout: () => Response('timeout', HttpStatus.requestTimeout));
 
@@ -86,7 +86,7 @@ Future<Quote> getRandomQuote() async {
 }
 
 Future<List<Map<String, dynamic>>> getCartContents(String accessToken) async {
-  final Uri serverUri = Uri.http(globals.serverHost, 'api/v1/basket/');
+  final Uri serverUri = Uri.http(AppEnviroment.serverHost, 'api/v1/basket/');
   final List<Map<String, dynamic>> result = List.empty(growable: true);
 
   final response =
@@ -110,7 +110,7 @@ Future<List<Map<String, dynamic>>> getCartContents(String accessToken) async {
 }
 
 Future<Book> getBookById(int id) async {
-  final Uri serverUri = Uri.http(globals.serverHost, 'api/v1/book/$id/');
+  final Uri serverUri = Uri.http(AppEnviroment.serverHost, 'api/v1/book/$id/');
   final response = await get(serverUri).timeout(const Duration(seconds: 10),
       onTimeout: () => Response('timeout', HttpStatus.requestTimeout));
   if (response.statusCode == HttpStatus.ok) {
@@ -128,13 +128,13 @@ Future<Book> getBookById(int id) async {
 }
 
 Future<void> deleteFromCart(int bookId) async {
-  final Uri serverUri = Uri.http(globals.serverHost, 'api/v1/basket/$bookId/');
+  final Uri serverUri = Uri.http(AppEnviroment.serverHost, 'api/v1/basket/$bookId/');
 
   final response = await delete(
     serverUri,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${globals.accessToken}'
+      'Authorization': 'Bearer ${AppEnviroment.tokens.access}'
     },
   ).timeout(const Duration(seconds: 10),
       onTimeout: () => Response('timeout', HttpStatus.requestTimeout));
@@ -144,12 +144,12 @@ Future<void> deleteFromCart(int bookId) async {
 }
 
 Future<void> editCartContents(int bookId, int count) async {
-  final Uri serverUri = Uri.http(globals.serverHost, 'api/v1/basket/$bookId/');
+  final Uri serverUri = Uri.http(AppEnviroment.serverHost, 'api/v1/basket/$bookId/');
 
   final response = await patch(serverUri,
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ${globals.accessToken}'
+            'Authorization': 'Bearer ${AppEnviroment.tokens.access}'
           },
           body: jsonEncode({'book_id': bookId, 'count': count}))
       .timeout(const Duration(seconds: 10),
@@ -160,12 +160,12 @@ Future<void> editCartContents(int bookId, int count) async {
 }
 
 Future<void> addToCart(int bookId, int count) async {
-  final Uri serverUri = Uri.http(globals.serverHost, 'api/v1/basket/');
+  final Uri serverUri = Uri.http(AppEnviroment.serverHost, 'api/v1/basket/');
 
   final response = await post(serverUri,
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ${globals.accessToken}'
+            'Authorization': 'Bearer ${AppEnviroment.tokens.access}'
           },
           body: jsonEncode({'book_id': bookId, 'count': count}))
       .timeout(const Duration(seconds: 10),
@@ -176,7 +176,7 @@ Future<void> addToCart(int bookId, int count) async {
 }
 
 Future<List<Book>> fetchBookList() async {
-  final Uri serverUri = Uri.http(globals.serverHost, 'api/v1/book/');
+  final Uri serverUri = Uri.http(AppEnviroment.serverHost, 'api/v1/book/');
   final response = await get(serverUri).timeout(const Duration(seconds: 10),
       onTimeout: () => Response('timeout', HttpStatus.requestTimeout));
 

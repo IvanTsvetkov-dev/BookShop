@@ -1,8 +1,7 @@
 import 'dart:io';
 
-import 'package:bookshopapp/api/server_api.dart';
-import 'package:bookshopapp/models/book.dart';
-import 'package:flutter/foundation.dart';
+import 'package:bookshopapp/api%5Blegacy%5D/server_api.dart';
+import 'package:bookshopapp/data/models/book.dart';
 import 'package:flutter/material.dart';
 
 class BookInCartCard extends StatefulWidget {

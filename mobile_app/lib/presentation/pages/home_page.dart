@@ -1,18 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:bookshopapp/api/cart_contents_controller.dart';
-import 'package:bookshopapp/api/server_api.dart';
-import 'package:bookshopapp/models/book.dart';
-import 'package:bookshopapp/models/quote.dart';
-import 'package:bookshopapp/pages/cart_page.dart';
-import 'package:bookshopapp/widgets/book_card.dart';
-import 'package:bookshopapp/widgets/book_loading_card.dart';
-import 'package:bookshopapp/widgets/quote_card.dart';
+import 'package:bookshopapp/core/cart_contents_controller.dart';
+import 'package:bookshopapp/api%5Blegacy%5D/server_api.dart';
+import 'package:bookshopapp/data/models/book.dart';
+import 'package:bookshopapp/presentation/pages/cart_page.dart';
+import 'package:bookshopapp/presentation/widgets/book_card.dart';
+import 'package:bookshopapp/presentation/widgets/book_loading_card.dart';
+import 'package:bookshopapp/presentation/widgets/quote_card.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
-import 'package:bookshopapp/api/globals.dart' as globals;
-import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 typedef WidgetBuilder = Widget Function();

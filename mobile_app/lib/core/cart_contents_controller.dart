@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:bookshopapp/api/server_api.dart';
-import 'package:bookshopapp/models/book.dart';
+import 'package:bookshopapp/api%5Blegacy%5D/server_api.dart';
+import 'package:bookshopapp/core/app_enviroment.dart';
+import 'package:bookshopapp/data/models/book.dart';
 import 'package:flutter/material.dart';
-import 'package:bookshopapp/api/globals.dart' as globals;
 
 class CartContentsController extends ChangeNotifier {
   Map<Book, int> loadedContents = {};
@@ -18,7 +18,7 @@ class CartContentsController extends ChangeNotifier {
 
   Future<void> initContents() async {
     final List<Map<String, dynamic>> cartInfo =
-        await getCartContents(globals.accessToken);
+        await getCartContents(AppEnviroment.tokens.access);
     final Map<Book, int> result = {};
     if (cartInfo.isEmpty) {
       return;
