@@ -10,6 +10,7 @@ from rest_framework.permissions import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django_filters.rest_framework import DjangoFilterBackend
 
 class BookViewSet(mixins.ListModelMixin,
                   mixins.RetrieveModelMixin,
@@ -19,6 +20,10 @@ class BookViewSet(mixins.ListModelMixin,
     queryset = models.Book.objects.all()
     
     pagination_class = BookViewSetPagination
+    
+    filter_backends = [DjangoFilterBackend]
+    
+    filterset_fields = ['genre']
 
 
 class BasketViewSet(mixins.RetrieveModelMixin,

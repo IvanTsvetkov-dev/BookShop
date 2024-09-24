@@ -4,16 +4,16 @@ from users.models import CustomUser
 
 class Book(models.Model):
     class GenreBook(models.TextChoices):
-        ROMANCE = 'Rmnce', 'Romance'
-        MYSTERY = 'Mystr', 'Mystery & Thriller'
-        FANTASY = 'Fntsy', 'Fantasy'
-        SELFHELP = 'Sf-HP', 'Self-help'
-        HORROR = 'Hrrr', 'Horror'
-        SCIENCEFICTION = 'SF', 'Science Fiction'
-        CHILDRENBOOKS = 'CB', 'Children'
-        BIOGRAPHY = 'B/A', 'Biography/Autobiography'
-        HISTORICAL = 'HF', 'Historical Fiction'
-        OTHER = 'OTHR', 'Other'
+        ROMANCE = 'Romance', 'Romance'
+        MYSTERY = 'Mystery Thriller', 'Mystery Thriller'
+        FANTASY = 'Fantasy', 'Fantasy'
+        SELFHELP = 'Self-help', 'Self-help'
+        HORROR = 'Horror', 'Horror'
+        SCIENCEFICTION = 'Science Fiction', 'Science Fiction'
+        CHILDRENBOOKS = 'Children', 'Children'
+        BIOGRAPHY = 'Biography', 'Biography'
+        HISTORICAL = 'Historical Fiction', 'Historical Fiction'
+        OTHER = 'Other', 'Other'
         
     title = models.CharField(
         max_length = 128,
